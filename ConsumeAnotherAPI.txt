@@ -1,0 +1,186 @@
+#Create simple project in STS.
+
+package com.rl;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication(scanBasePackages= {"com.rl"})
+
+public class RestTemplateApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(RestTemplateApplication.class, args);
+	}
+
+}
+
+
+------------------------------------------------------------------------
+
+package com.rl.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+@RestController
+@RequestMapping("/API")
+public class RestTemplateController {
+	
+	@Autowired
+	Environment env;
+
+	@GetMapping(value = "/restmenu")
+	public String getmenu() {
+	return  "hello world";
+		
+		
+	
+	//@GetMapping(value = "/restmenu")
+	//public String getmenu() {
+	//return  "hello world";
+		
+		
+	
+	}
+	
+	
+	@GetMapping(value = "/r")
+	public ResponseEntity<?> print() {
+		
+		String output = null;
+	try {
+		System.out.println("Executing restmenuname!!");
+		RestTemplate restTemplate = new RestTemplate();
+		String url = env.getProperty("url");
+	    output = restTemplate.getForObject(url, String.class);
+		System.out.println(output);
+	
+	}catch(Exception e) {
+		printstacktrace(e);
+	}
+	return new ResponseEntity<>(output,HttpStatus.OK);
+		
+
+	}
+
+	
+	
+	private void printstacktrace(Throwable i) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@GetMapping(value = "/gettutorials")
+	public String tutorials() {
+		String link = "localhost:8085/api/tutorials";
+		RestTemplate rs = new RestTemplate();
+		String result = rs.getForObject(link, String.class);
+		return result;
+
+	}
+
+//	private  String getmenuname(){
+//		try {
+//	String uri = "localhost:8080/restmenu";
+//	RestTemplate restTemplate = new RestTemplate();
+//	Menu result = restTemplate.getForObject(uri, Menu.class);
+//	 
+//	}catch(Exception i) {
+//		System.out.println(i);
+//	}
+//		
+//		finally {
+//			System.out.println("executing funally");
+//		}
+//		return Menu;
+//		
+//	}
+
+}
+
+
+----------------------------------------------------------------------------------
+
+
+set server.port=5678 in STS project
+
+#this URL
+
+http://localhost:5678/API/restmenu
+
+
+************************************************************************************
+
+Here,i have created another simple project in Eclipse to comsume above API from STS
+
+
+
+package com.test.Controller;
+import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+
+@RestController
+@RequestMapping("/api/")
+
+
+public class controller {
+
+	@Autowired
+	Environment env;
+	
+	@RequestMapping(value="testAPI",method=RequestMethod.GET)
+	public ResponseEntity<?>testAPI(@RequestParam Map<String,String>requestParams) throws Exception
+	{
+		requestParams.put("STATUS", "Sucsses");
+		requestParams.put("DESC", " Test Sucsses");
+		 
+		return new ResponseEntity<>(requestParams,HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/output")
+	public ResponseEntity<?> output() {
+		String output = null;
+	try {
+
+		System.out.println("Executing restmenuname!!");
+		RestTemplate restTemplate = new RestTemplate();
+		String url = env.getProperty("url");
+	    output = restTemplate.getForObject(url, String.class);
+		System.out.println(output);
+	
+	}catch(Exception e) {
+		e.printStackTrace();
+		
+	}
+	return new ResponseEntity<>(output,HttpStatus.OK);
+		
+
+	}
+	
+	
+	
+}
+
+
+this url:  http://localhost:8080/Sample/api/output
+
+
+note:  when i ployed above URL in post-man, i will get STS project output
+
+
+
